@@ -5,10 +5,10 @@ import java.util.concurrent.TimeUnit;
 public class ThreadSum {
     public static void main(String[] args) {
         final int LIMIT = 10_000_000;
-        double sum = 0;
-        Counter counter = new AtomicCounter();
-        sum += runMultipleThread(10, counter, LIMIT);
-        System.out.println(sum);
+        runTest(new Counter(), LIMIT);
+        runTest(new CounterWithLock(), LIMIT);
+        runTest(new SynchronousCounter(), LIMIT);
+        runTest(new AtomicCounter(), LIMIT);
     }
 
     public static double runThreads(Counter counter, final int limit) {
@@ -44,13 +44,11 @@ public class ThreadSum {
                 for (int i = 1; i <= limit; i++) {
                     counter.add(i);
                 }
-                System.out.println("Done " + Thread.currentThread().getName());
             };
             Runnable subTask = () -> {
                 for (int i = 1; i <= limit; i++) {
                     counter.add(-i);
                 }
-                System.out.println("Done " + Thread.currentThread().getName());
             };
 
             executorService.submit(addTask);
@@ -65,8 +63,13 @@ public class ThreadSum {
         System.out.println("All down");
 
         double elapsed = 1.0e-9 * (System.nanoTime() - startTime);
-        System.out.printf("Count 1 to %,d in %.6f sec\n", limit, elapsed);
         System.out.printf("Counter total is %d\n", counter.get());
         return elapsed;
+    }
+
+    public static void runTest(Counter counter, int limit) {
+        System.out.println("Run task using " + counter.getClass().getName());
+        double time = runMultipleThread(10, counter, limit);
+        System.out.printf("Counting to %,d in %.6fs%n%n", limit, time);
     }
 }

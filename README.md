@@ -63,9 +63,9 @@ Question 6.2: Synchronized.
 
 ## 7. Using Many Threads (optional)
 
-```markdown
-Count 1 to 10,000,000 in 2.838245 sec
-Counter total is 0
-Time elapsed: 2.838245138s
-```    
-Using the most time.
+| Counter class           | Limit              | Runtime (sec)   |
+|:------------------------|:-------------------|-----------------|
+| Unsynchronized counter  |     10,000,000     |  0.169199s      |
+| Using ReentrantLock     |     10,000,000     |  6.633804s      |
+| Syncronized method      |     10,000,000     |  8.973703s      |
+| AtomicLong for total    |     10,000,000     |  2.960015s      |
